@@ -11,6 +11,10 @@ export function CountDown() {
   const id = useRef(null);
 
   function handleSubmit() {
+    if (id.current) {
+      clearInterval(id.current);
+    }
+
     if (target === "") {
       return;
     }
@@ -29,10 +33,10 @@ export function CountDown() {
   }
 
   useEffect(() => {
-    if (seconds <= 0) {
+    if (seconds <= 0 && minutes <= 0 && hours <= 0 && days <= 0) {
       clearInterval(id.current);
     }
-  }, [seconds]);
+  }, [seconds, minutes, hours, days]);
 
   return (
     <>
