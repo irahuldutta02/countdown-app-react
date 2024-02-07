@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 export function CountDown() {
   const [target, setTarget] = useState("");
@@ -7,6 +8,7 @@ export function CountDown() {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
+  const [completed, setCompleted] = useState(true);
 
   const id = useRef(null);
 
@@ -16,12 +18,24 @@ export function CountDown() {
     }
 
     if (target === "") {
+      toast.error("Please select a date-time", {
+        position: "bottom-right",
+        autoClose: 3000,
+        theme: "colored",
+      });
       return;
     }
 
     if (new Date() > new Date(target)) {
+      toast.error("Please select a future date-time", {
+        position: "bottom-right",
+        autoClose: 3000,
+        theme: "colored",
+      });
       return;
     }
+
+    setCompleted(false);
 
     id.current = setInterval(() => {
       const diff = new Date(target) - new Date();
@@ -34,7 +48,16 @@ export function CountDown() {
 
   useEffect(() => {
     if (seconds <= 0 && minutes <= 0 && hours <= 0 && days <= 0) {
+      setCompleted(true);
+      setTarget("");
       clearInterval(id.current);
+      if (target !== "") {
+        toast.success("Countdown completed", {
+          position: "bottom-right",
+          autoClose: 3000,
+          theme: "colored",
+        });
+      }
     }
   }, [seconds, minutes, hours, days]);
 
@@ -69,14 +92,16 @@ export function CountDown() {
               Start
             </button>
           </div>
-          <div className="flex items-center justify-center">
-            <ul className="flex  justify-center items-center flex-wrap gap-4 dark:text-white">
-              <Block time={days} unit={"Days"} />
-              <Block time={hours} unit={"Hours"} />
-              <Block time={minutes} unit={"Minutes"} />
-              <Block time={seconds} unit={"Seconds"} />
-            </ul>
-          </div>
+          {!completed && (
+            <div className="flex items-center justify-center">
+              <ul className="flex  justify-center items-center flex-wrap gap-4 dark:text-white">
+                <Block time={days} unit={"Days"} />
+                <Block time={hours} unit={"Hours"} />
+                <Block time={minutes} unit={"Minutes"} />
+                <Block time={seconds} unit={"Seconds"} />
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </>
