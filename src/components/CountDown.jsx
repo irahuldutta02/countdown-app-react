@@ -59,6 +59,7 @@ export function CountDown() {
         });
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [seconds, minutes, hours, days]);
 
   return (
